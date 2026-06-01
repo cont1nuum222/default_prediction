@@ -1,0 +1,32 @@
+Сравнение алгоритмов: балансовый дефолт через 2 года (out-of-time)
+
+Train (≤2020): 1,722,493 строк, Test (2021-2022): 471,935 строк
+Base rate (test): 12.26%
+Признаков: 59, для CatBoost 61 (+2 нативные категории)
+Бюджет бустингов: 1000 деревьев, lr=0.05, depth≈7
+RAM-cap для RandomForest/ExtraTrees: train ≤ 500,000
+
+Результаты:
+
+  Логистическая регрессия        ROC-AUC=0.8647  KS=0.5849  PR-AUC=0.5779  Lift@1%= 6.67  scaled+imputed, числовой набор
+  Дерево решений                 ROC-AUC=0.8929  KS=0.6311  PR-AUC=0.6556  Lift@1%= 7.47  одиночное дерево
+  Случайный лес                  ROC-AUC=0.9002  KS=0.6365  PR-AUC=0.6741  Lift@1%= 7.62  train подвыборка 500,000
+  Extra Trees                    ROC-AUC=0.8870  KS=0.6031  PR-AUC=0.6405  Lift@1%= 7.56  train подвыборка 500,000
+  HistGradientBoosting           ROC-AUC=0.9025  KS=0.6407  PR-AUC=0.6820  Lift@1%= 7.67  sklearn, нативные NaN
+  LightGBM                       ROC-AUC=0.9023  KS=0.6394  PR-AUC=0.6826  Lift@1%= 7.67  нативные NaN, числовой набор
+  LightGBM (нативные категории)  ROC-AUC=0.9037  KS=0.6409  PR-AUC=0.6871  Lift@1%= 7.73  region/okved как категории
+  CatBoost                       ROC-AUC=0.9042  KS=0.6428  PR-AUC=0.6878  Lift@1%= 7.71  нативные категории, ordered TS
+  CatBoost (production)          ROC-AUC=0.9051  KS=0.6431  PR-AUC=0.6888  Lift@1%= 7.74  загружен model_prod.cbm, только predict
+
+Итог по ROC-AUC (test 2021-2022):
+
+  Алгоритм                        ROC-AUC       KS    PR-AUC   Lift@1%
+  CatBoost (production)            0.9051   0.6431    0.6888      7.74
+  CatBoost                         0.9042   0.6428    0.6878      7.71
+  LightGBM (нативные категории)    0.9037   0.6409    0.6871      7.73
+  HistGradientBoosting             0.9025   0.6407    0.6820      7.67
+  LightGBM                         0.9023   0.6394    0.6826      7.67
+  Случайный лес                    0.9002   0.6365    0.6741      7.62
+  Дерево решений                   0.8929   0.6311    0.6556      7.47
+  Extra Trees                      0.8870   0.6031    0.6405      7.56
+  Логистическая регрессия          0.8647   0.5849    0.5779      6.67
